@@ -281,9 +281,6 @@ class DkbConverter(object):
     # The financial software's target account (such as Aktiva:VISA)
     DEFAULT_CATEGORY = None
 
-    # QIF-internal card name
-    CREDIT_CARD_NAME = 'VISA'
-
     # input charset
     INPUT_CHARSET = 'latin1'
 
@@ -305,7 +302,7 @@ class DkbConverter(object):
     # transaction line:
     REQUIRED_FIELDS = 5
 
-    def __init__(self, csv_text, default_category=None, cc_name=None):
+    def __init__(self, csv_text, default_category=None):
         """
         Constructor
 
@@ -318,7 +315,6 @@ class DkbConverter(object):
             .decode(self.INPUT_CHARSET)
             .encode(self.OUTPUT_CHARSET))
         self.DEFAULT_CATEGORY = default_category
-        self.CREDIT_CARD_NAME = cc_name or 'VISA'
 
     def format_date(self, line):
         """
@@ -390,9 +386,6 @@ class DkbConverter(object):
         @return iterator
         """
         logger.info("Running csv->qif conversion...")
-        yield '!Account'
-        yield 'N' + self.CREDIT_CARD_NAME
-        yield '^'
         yield '!Type:Bank'
         lines = self.csv_text.split('\n')
         reader = csv.reader(lines, delimiter=";")
@@ -437,8 +430,6 @@ if __name__ == '__main__':
         help="Last 4 digits of your card number")
     cli.add_argument("--output", "-o",
         help="Output path (QIF)")
-    cli.add_argument("--qif-account",
-        help="Default QIF account name (e.g. Aktiva:VISA)")
     cli.add_argument("--from-date",
         help="Export transactions as of... (DD.MM.YYYY)")
     cli.add_argument("--to-date",
@@ -505,7 +496,7 @@ if __name__ == '__main__':
             f = open(args.output, 'w')
         f.write(csv_text)
     else:
-        dkb2qif = DkbConverter(csv_text, cc_name=args.qif_account)
+        dkb2qif = DkbConverter(csv_text)
         dkb2qif.export_to(args.output)
 
 # Testing
