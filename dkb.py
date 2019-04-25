@@ -448,6 +448,7 @@ if __name__ == '__main__':
         help="Store the raw CSV file instead of QIF")
     cli.add_argument("--debug", action="store_true")
     cli.add_argument("--quiet", action="store_true")
+    cli.add_argument("--pin", default=os.environ.get('DKB_PIN', ""))
 
     args = cli.parse_args()
     if not args.userid:
@@ -473,7 +474,7 @@ if __name__ == '__main__':
     if not args.output:
         cli.error("Please specify a valid output path")
 
-    pin = ""
+    pin = args.pin
     import os
     if os.isatty(0):
         while not pin.strip():
