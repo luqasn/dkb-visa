@@ -447,6 +447,7 @@ if __name__ == '__main__':
     cli.add_argument("--raw", action="store_true",
         help="Store the raw CSV file instead of QIF")
     cli.add_argument("--debug", action="store_true")
+    cli.add_argument("--quiet", action="store_true")
 
     args = cli.parse_args()
     if not args.userid:
@@ -457,6 +458,8 @@ if __name__ == '__main__':
     level = logging.INFO
     if args.debug:
         level = logging.DEBUG
+    elif args.quiet:
+        level = logging.ERROR
     logging.basicConfig(level=level, format='%(message)s')
 
     def is_valid_date(date):
